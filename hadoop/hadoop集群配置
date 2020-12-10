@@ -1,0 +1,195 @@
+
+1.关闭防火墙
+	sudo ufw disable
+
+2.修改hostname
+	sudo vim /etc/hostname 
+	sudo reboot 重启生效
+	hostnamectl  set-hostname  hadoop-1      #永久修改hostname(立即生效）
+  配置hosts(IP和主机名映射)
+	sudo vim /etc/hosts
+	192.168.122.51 liu01
+	192.168.122.52 liu02
+	192.168.122.53 liu03
+	192.168.122.54 liu04
+	192.168.122.55 liu05
+
+	
+3.ssh免密码登录
+	ssh-keygen -t rsa	生成秘钥
+	scp id_rsa.pub  liu@192.168.122.55:/home/liu 将公钥拷贝到需要免密登录的机器
+	cat ~/id_rsa.pub >> ~/.ssh/authorized_keys 在拷贝的机器上运行将公钥添加到免密登录的列表
+	ssh-copy-id -----
+
+4.安装jdk
+	export JAVA_HOME=/usr/jdk1.8.0_192
+	export CLASSPATH=.:${JAVA_HOME}/jre/lib/rt.jar:${JAVA_HOME}/lib/dt.jar:${JAVA_HOME}/lib/tools.jar
+	export PATH=$PATH:${JAVA_HOME}/bin
+
+
+5.下载解压hadoop3.2.0
+
+
+6.创建dfs相关目录
+ 	mkdir -pv dfs/{name,data,tmp}
+ 
+ 
+7.修改环境变量，添加hadoop环境比那里
+	sudo vi /etc/profile
+
+	#Add HADOOP_HOME PATH
+	export HADOOP_HOME=/home/liu/work/hadoop-3.2.0
+	export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+
+	sources /etc/profile	
+
+8.修改配置文件
+	修改 /hadoop-3.1.2/etc/hadoop/hadoop-env.sh 添加   mapred-env.sh   yarn-env.sh
+	export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_221
+
+----------------------------------------------------------------------
+core-site.xml  （配置Common组件属性）
+
+<configuration>
+
+	 <property>
+		<!-- 配置hdfs地址 -->
+		<name>fs.default.name</name>
+		<value>hdfs://liu01:8020</value>
+		<description>HDFS</description>
+	</property>
+	<property>
+		<!-- 保存临时文件目录，需先在/opt/hadoop下创建tmp目录 -->
+		<name>hadoop.tmp.dir</name>
+		<value>/home/liu/work/hadoop-3.2.0/hdfs/tmp</value>
+		<description>tmp</description>
+	</property>
+	<property>
+		<name>hadoop.proxyuser.liu01.hosts</name>
+		<value>*</value>
+	</property>
+	<property>
+		<name>hadoop.proxyuser.liu01.groups</name>
+		<value>*</value>
+	</property>
+
+</configuration>
+
+
+----------------------------------------------------------------------
+hdfs-site.xml  （配置HDFS组件属性）
+
+<configuration>
+	<property>
+		<name>dfs.name.dir</name>
+		<value>/home/liu/work/hadoop-3.2.0/hdfs/name</value>
+	</property>
+	<property>
+		<name>dfs.data.dir</name>
+		<value>/home/liu/work/hadoop-3.2.0/hdfs/data</value>
+	</property>
+	<property>
+		<name>dfs.replication</name>
+		<value>1</value>
+	</property>
+</configuration>
+----------------------------------------------------------------------
+mapred-site.xml  （配置Map-Reduce组件属性）
+
+<configuration>
+	<property>
+		<name>mapreduce.framework.name</name>
+		<value>yarn</value>
+	</property>
+	<property>
+		<name>mapred.child.java.opts</name>
+		<value>-Xmx2048m</value>
+	</property>
+	<property>
+		<name>mapreduce.jobhistory.address</name>
+		<value>liu01:10020</value>
+	</property>
+	<property>
+		<name>mapreduce.jobhistory.webapp.address</name>
+		<value>liu01:19888</value>
+	</property>
+</configuration>
+----------------------------------------------------------------------
+yarn-site.xml   （配置资源调度属性）
+
+<configuration>
+	<!-- reducer获取数据的方式 -->
+	<property>
+		<name>yarn.nodemanager.aux-services</name>
+		<value>mapreduce_shuffle</value>
+	</property>
+	<property>
+		<name>yarn.resourcemanager.webapp.address</name>
+		<value>${yarn.resourcemanager.hostname}:8088</value>
+	</property>
+	<property>
+		<name>yarn.log-aggregation-enable</name>
+		<value>true</value>
+	</property>
+	<property>
+		<name>yarn.scheduler.maximum-allocation-mb</name>
+		<value>2000</value>
+	</property>
+	<property>
+		<name>yarn.nodemanager.resource.memory-mb</name>
+		<value>2000</value>
+	</property>
+	<property>
+		<name>yarn.nodemanager.resource.cpu-vcores</name>
+		<value>1</value>
+	</property>
+	<property>
+		<name>yarn.resourcemanager.address</name>
+		<value>liu01:8032</value>
+	</property>
+	<property>
+		<name>yarn.resourcemanager.scheduler.address</name>
+		<value>liu01:8030</value>ffffffff
+	</property>
+	<property>
+		<name>yarn.resourcemanager.resource-tracker.address</name>
+		<value>liu01:8031</value>
+	</property>
+</configuration>
+
+
+----------------------------------------------------------------------
+增加从节点地址（若配置了hosts，可直接使用主机名，亦可用IP地址）
+workers文件中添加子节点
+	vim workers
+	liu02
+	liu03
+	liu04
+	liu05
+
+
+
+9.将配置好的文件夹拷贝到其他从节点
+
+
+
+10.格式化 hadoop namenode -format
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

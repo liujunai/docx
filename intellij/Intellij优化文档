@@ -1,0 +1,126 @@
+#IDEA 快捷键
+在2017版的idea中选中一个类名,然后右键 copy reference
+在需要包名+类名的地方,右键 paste simple
+IDEA批量修改变量快捷键：Ctrl+Shift+Alt+J
+
+
+#避免每次打开intellij的时候直接打开项目
+systerm setting -> Reopen last project on startup去掉勾
+
+#提示不去分大小写
+setting->然后，输入：sensitive  将右侧的 case sensitive completion 修改为NONE
+
+#鼠标悬停提示
+setting->editor-> General->Show quick doc on mouse move
+
+#显示行号
+setting-》editor->appearance->show line number
+#设置方法线
+setting-》editor->appearance->show method separators　
+#中添加隐藏的文件类型　.iml    .imi为intellij生成的记录本机环境的文件类似Eclipse中的.project
+setting-》editor->file types->igonre files and folders 
+#引入包优化
+setting-》editor->general->Auto Import -> 1 optimize imports on the fly     	   勾选标注 1 IntelliJ IDEA 将在我们书写代码的时候自动帮我们优化导入的包
+																				   比如自动去掉一些没有用到的包。
+                                       -> 2 Add unambiguous imports on the fly     勾选标注 2 选项，IntelliJ IDEA 将在我们书写代码的时候自动帮我们导入需
+																				   要用到的包。但是对于那些同名的包，还是需要手动 Alt + Enter 进行导入的，IntelliJ IDEA 目前还无法智能到替我们做判断。
+ 
+#修改鼠标选中的颜色
+setting->Editor->Colors & Fonts ->General  -> 右边的Editor下面的Selection background
+
+
+实时编译，方便JRebel保存即生效
+选择Edit -> Macros -> Start Macro Recording
+打开一个.java文件，编辑一下文件，比如加个回车键
+按Ctrl+S键
+按Ctrl+Shift+F9键
+选择Edit -> Macros -> Stop Macro Recording，在弹出框中输入“Save & Compile”
+选择File -> Setting -> Keymap,在搜索框中输入“Save & Compile”，选中“Mocros”下的“Save & Compile”,右键选择“Add Keyboard Shortcut”,按Ctrl+S键，点击“OK”，之后点击“Remove”
+点击Setting页面下的“OK”。
+
+
+
+#IntelliJ 内存优化(本优化方案开启后占用2G内存，实测一切正常)
+-server
+-Xms2g
+-Xmx2g
+-XX:NewRatio=3
+-Xss16m
+-XX:+UseConcMarkSweepGC
+-XX:+CMSParallelRemarkEnabled
+-XX:ConcGCThreads=4
+-XX:ReservedCodeCacheSize=240m
+-XX:+AlwaysPreTouch
+-XX:+TieredCompilation
+-XX:+UseCompressedOops
+-XX:SoftRefLRUPolicyMSPerMB=50
+-Dsun.io.useCanonCaches=false
+-Djava.net.preferIPv4Stack=true
+-Djsse.enableSNIExtension=false
+-ea
+
+
+
+#IntelliJ 网上成品主题样式
+http://www.riaway.com/theme.php
+
+#IntelliJ 使用教程
+http://www.importnew.com/15462.html
+http://www.phperz.com/article/15/0923/159043.html
+http://www.cnblogs.com/NurHier/p/4414750.html
+https://docs.jelastic.com/idea-plugin
+
+#IntelliJ 常用插件
+
+##  Alibaba Java Coding Guidelines   阿里巴巴出的代码规范检查插件
+
+## activate-power-mode    烟花效果
+
+## CodeGlance  右侧缩略图显示与隐藏
+
+## Background Image Plus  IDE背景图片   
+
+# AceJump  （默认是 Ctrl+J），再按任一个字符，插件就会在屏幕中这个字符的所有出现位置都打上标签
+
+## Maven Helper  查看maven的依赖树 解决依赖冲突  
+
+# GsonFormat  把json格式的内容转成Object
+
+# PlantUML   是一个支持快速绘制的开源项目。其定义了一套完整的语言用于实现UML关系图的描述，并基于强大的Graphviz图形渲染库进行UML图的生成
+
+# wakatime   记录每天敲代码的时间,从此网站https://wakatime.com/ 查看,github账号登陆。需要安装下面的插件
+
+## IDEAtalk  是由JetBrains的工程师开发的一款代码级的协同工具，自动查找局域网内使用IDETalk插件的用户，并加入到联系列表中，支持分组。
+
+# Mongo Plugin  是MongoDB插件并连接MongoDB
+
+# Grep Console  控制的台输出带颜色的日志
+
+## ECTranslation  翻译查件
+
+## Translation    开发的时候经常会遇到看不懂的英语单词，再去百度多麻烦，这里推荐这款翻译插件，安装后选中单词按下快捷键ALT+1即可。
+
+http://yiiguxing.github.io/TranslationPlugin/start.html 翻译操作步骤
+
+
+## camelcase   驼峰命名法插件
+
+# FindBugs    静态分析工具，检查程序潜在bug，在bug报告中快速定位到问题的代码上；
+
+# Statistic   统计插件 统计自己到底写了多少代码 
+
+
+
+
+
+
+## Key promoter  这款插件适合新手使用。当你点击鼠标一个功能的时候，可以提示你这个功能快捷键是什么。这是一个非常有用的功能，很快就可以熟悉软件的快捷功能了。 
+
+
+
+
+
+
+
+
+

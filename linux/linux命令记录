@@ -1,0 +1,93 @@
+重启命令：
+1、reboot
+2、shutdown -r now 立刻重启(root用户使用)
+3、shutdown -r 10 过10分钟自动重启(root用户使用)
+4、shutdown -r 20:35 在时间为20:35时候重启(root用户使用)
+如果是通过shutdown命令设置重启的话，可以用shutdown -c命令取消重启
+
+关机命令：
+1、halt   立刻关机
+2、poweroff 立刻关机
+3、shutdown -h now 立刻关机(root用户使用)
+4、shutdown -h 10 10分钟后自动关机
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo apt-get update 更新源 
+
+sudo apt-get upgrade 更新已安装的包 
+
+sudo apt-get dist-upgrade 升级系统软件
+
+jps -lvm | grep tomcat 查找线程
+
+kill -9  终止线程
+
+gsettings set org.compiz.unityshell:/org/compiz/profiles/unity/plugins/unityshell/ launcher-minimize-window true  #点击应用程序图标即可'最小化'的功能
+
+gsettings set com.canonical.Unity.Launcher launcher-position Bottom  将 Ubuntu 16.04 LTS 的 Unity 启动器移动到桌面底部命令
+
+gsettings set com.canonical.Unity.Launcher launcher-position Left    恢复到原来的左侧命令
+
+
+
+
+
+ubuntu右上角红色三角感叹号警告，显示更新信息已过期The update information is outdated。  
+  
+解决方案：  
+首先在“系统设置（system settings）”->“软件和更新（Software&Updates）”->“其它软件（Other Software）”中将所有的项目删除掉，然后执行如下命令：  
+  
+1、sudo rm -rf /var/lib/apt/lists （删除lists文件夹）  
+2、sudo mkdir /var/lib/apt/lists  （创建新的lists文件夹）  
+3、sudo apt-get update  (更新源）  

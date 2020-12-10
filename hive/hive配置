@@ -1,0 +1,96 @@
+hive 安装配置
+   1.Linux MySQL安装：
+	rpm -qa|grep -i mysql  查询MySQL
+	用命令 yum -y remove   卸载MySQL
+	安装MySQL5.7
+	cd /usr/local/src/
+	wget http://repo.mysql.com/mysql57-community-release-el7-8.noarch.rpm 
+	rpm -ivh mysql57-community-release-el7-8.noarch.rpm 
+	yum -y install mysql-server
+	启动mysql服务
+	service mysqld restart 
+	查看临时密码
+	grep "password" /var/log/mysqld.log    
+	mysql -u root -p   密码 进入
+	修改密码
+	alter user 'root'@'localhost' identified by 'Root!!2018';   
+	增加root用户指定可以任意IP登录
+	grant all on *.* to 'root001'@'%' identified by 'Root@@'  with grant option;
+	最后记得刷新权限；
+	flush privileges 
+   
+   2.解压hive的安装包
+	tar -zxvf apache-hive-0.14.0-bin.tar.gz -C ../
+	
+	配置环境变量
+	sudo vim /etc/profile
+	export HIVE_HOME=/home/liu/work/hive-3.1.2
+	export PATH=$PATH:HIVE_HOME/bin
+	使变量立即生效
+	source /etc/profile
+	
+   3.备份配置文件
+        cp hive-env.sh.template hive-env.sh
+        cp hive-default.xml.template hive-site.xml
+        cp hive-log4j2.properties.template hive-log4j2.properties  
+   4.配置hive的配置文件
+	1).修改 hive-log4j2.properties
+	property.hive.log.dir = /home/liu/work/hive-3.1.2/temp/logs
+	
+	2).修改 hive-env.sh
+       JAVA_HOME=/usr/local/jdk1.7.0_55
+	HADOOP_HOME=/usr/local/hadoop-2.4.1
+	HIVE_HOME=/usr/local/hive-0.14.0
+   
+   	3).修改 hive-site.xml
+   		<property>
+		    <name>hive.exec.local.scratchdir</name>
+		    <value>/home/liu/work/hive-3.1.2/logs</value>
+		</property>
+		<property>
+		    <name>hive.downloaded.resources.dir</name>
+		    <value>/home/liu/work/hive-3.1.2/logs</value>
+		  </property>
+		<property>
+		    <name>hive.server2.logging.operation.log.location</name>
+		    <value>/home/liu/work/hive-3.1.2/logs</value>
+		</property>
+
+		<property>
+		    <name>hive.querylog.location</name>
+		    <value>/home/liu/work/hive-3.1.2/logs</value>
+		</property>
+
+
+		<property>
+		    <name>hive.metastore.warehouse.dir</name>
+		    <value>/user/hive2/warehouse</value>
+		    <description>HDFS路径</description>
+		</property>
+
+		<property>
+		    <name>javax.jdo.option.ConnectionURL</name>
+		    <value>jdbc:mysql://liu01:3306/hive2?createDatabaseIfNotExist=true</value>
+		</property>
+
+		<property>
+		    <name>javax.jdo.option.ConnectionDriverName</name>
+		    <value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property>
+		    <name>javax.jdo.option.ConnectionUserName</name>
+		    <value>root</value>
+		</property>
+		 <property>
+		    <name>javax.jdo.option.ConnectionPassword</name>
+		    <value>aA123_456</value>
+		</property>
+
+   5.拷贝mysql驱动到$HIVE_HOME/lib目录下(常用的MySQL驱动jar包)
+   	cp /usr/local/soft/mysql-connector-java-5.1.39.jar $HIVE_HOME/lib/
+   
+   7.初始化hive
+     	schematool -dbType mysql -initSchema
+   
+   8.启动 hive
+   	hive，出现以下信息，特别是出现 hive>，说明安装成功了。
