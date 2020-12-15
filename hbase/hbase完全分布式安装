@@ -1,0 +1,39 @@
+hbase完全分布式安装：
+    1.下载hbase
+        wget https://mirrors.tuna.tsinghua.edu.cn/apache/hbase/2.2.0/hbase-2.2.0-bin.tar.gz
+    2.安装
+        tar -zxvf hbase-2.2.0-bin.tar.gz
+    3.修改配置
+        1.hbase-env.sh
+            export JAVA_HOME=/usr/jdk1.8.0_192
+            export HBASE_MANAGES_ZK=false
+        2.hbase-site.xml
+            <!-- 指定hbase在HDFS上存储的路径 -->
+            <property>
+                <name>hbase.rootdir</name>
+                <value>hdfs://liu01/hbase</value>
+            </property>
+            <!-- 指定hbase是否分布式运行 -->
+            <property>
+                <name>hbase.cluster.distributed</name>
+                <value>true</value>
+            </property>
+            <!-- 指定zookeeper的地址，多个用“,”分割 -->
+            <property>
+                <name>hbase.zookeeper.quorum</name>
+                <value>liu01,liu02,liu03,liu04,liu05</value>
+            </property>
+        3.regionservers（集群节点配置）
+            liu02
+            liu03
+            liu04
+            liu05
+        4.创建 backup-masters
+            liu05
+    4.配置环境变量
+        sudo vim /etv/profile
+        export HBASE_HOME=/home/liu/work/hbase-2.3.0
+        export PATH=$PATH:$HBASE_HOME/bin
+        source /etc/profile
+
+    主节点启动 start-hbase.sh

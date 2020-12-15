@@ -38,11 +38,12 @@ hive 安装配置
 	property.hive.log.dir = /home/liu/work/hive-3.1.2/temp/logs
 	
 	2).修改 hive-env.sh
-       JAVA_HOME=/usr/local/jdk1.7.0_55
-	HADOOP_HOME=/usr/local/hadoop-2.4.1
-	HIVE_HOME=/usr/local/hive-0.14.0
+        JAVA_HOME=/usr/local/jdk1.7.0_55
+        HADOOP_HOME=/usr/local/hadoop-2.4.1
+        HIVE_HOME=/usr/local/hive-0.14.0
    
    	3).修改 hive-site.xml
+   	    1.源数据服务
    		<property>
 		    <name>hive.exec.local.scratchdir</name>
 		    <value>/home/liu/work/hive-3.1.2/logs</value>
@@ -85,6 +86,24 @@ hive 安装配置
 		    <name>javax.jdo.option.ConnectionPassword</name>
 		    <value>aA123_456</value>
 		</property>
+		2.客户端服务
+		<property>
+            <name>hive.metastore.warehouse.dir</name>
+            <value>/user/hive2/warehouse</value>
+        </property>
+        <property>
+            <name>hive.metastore.uris</name>
+            <value>thrift://liu04:9083</value>
+        </property>
+        <property>
+            <name>hive.server2.thrift.port</name>
+            <value>10000</value>
+        </property>
+        <property>
+            <name>hive.server2.thrift.bind.host</name>
+            <value>192.168.122.55</value>
+        </property>
+
 
    5.拷贝mysql驱动到$HIVE_HOME/lib目录下(常用的MySQL驱动jar包)
    	cp /usr/local/soft/mysql-connector-java-5.1.39.jar $HIVE_HOME/lib/
@@ -94,3 +113,5 @@ hive 安装配置
    
    8.启动 hive
    	hive，出现以下信息，特别是出现 hive>，说明安装成功了。
+   	hive --service metastore  hive源数据服务
+

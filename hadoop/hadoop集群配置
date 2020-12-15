@@ -65,11 +65,11 @@ core-site.xml  （配置Common组件属性）
 		<description>tmp</description>
 	</property>
 	<property>
-		<name>hadoop.proxyuser.liu01.hosts</name>
+		<name>hadoop.proxyuser.liu.hosts</name>
 		<value>*</value>
 	</property>
 	<property>
-		<name>hadoop.proxyuser.liu01.groups</name>
+		<name>hadoop.proxyuser.liu.groups</name>
 		<value>*</value>
 	</property>
 
