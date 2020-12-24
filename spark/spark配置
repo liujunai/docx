@@ -1,0 +1,30 @@
+搭建Spark集群
+    1.配置环境变量
+        export SPARK_HOME=/home/liu/work/spark-3.0.0
+        export PATH=$PATH:$SPARK_HOME/bin
+    2.slave配置文件
+        cp slaves.template slaves
+        vim slaves 将子节点host 配置上去
+        liu02
+        liu03
+        liu04
+        liu05
+    3.spark-env.sh配置文件
+        cp spark-env.sh.template spark-env.sh
+        vim spark-env.sh  添加如下内容
+
+        # jdk环境变了
+        export JAVA_HOME=/usr/jdk1.8.0_192
+        # 主节点的域名host
+        export SPARK_MASTER_HOST=liu01
+        # 默认端口
+        export SPARK_MASTER_PORT=7077
+        # spark使用内存1G
+        export SPARK_WORKER_MEMORY=1g
+        # 设置在这台机器上使用的核心数量
+        export SPARK_WORKER_CORES=1
+
+        #hive的jar目录  spark连接 hive配置
+        #export CLASSPATH=$CLASSPATH:/opt/cloudera/parcels/CDH/lib/hive/lib
+        #scala 编写配置
+        #export SCALA_HOME=/opt/cloudera/parcels/CDH/lib/scala
