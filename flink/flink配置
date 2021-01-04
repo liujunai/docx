@@ -1,0 +1,48 @@
+flink的三种运行模式
+https://www.cnblogs.com/aibabel/p/10937110.html
+    单机模式
+        Flink 可以运行在 Linux、Mac OS X 和 Windows 上。本地模式的安装唯一需要的只是jdk 7或更高版本，本地运行会启动Single JVM，主要用于测试调试代码。
+    Standalone 分布式
+        Standalone模式是flink原生提供的一种分布式独立部署方案,也是master/slave架构.
+    on yarn
+        和spark on yarn类似,flink向yarn申请资源,在申请的容器里执行计算任务.
+        
+
+    Flink 本身只提供支持Hadoop  2.4.1,   2.6.5,    2.7.5,    2.8.3 的预编译安装包。如果想要flink on yarn（HDP3.1）,一定需要自己编译。
+
+
+    Standalone 分布式
+        1.解压
+            tar zxvf flink-1.10.1-bin-scala_2.12.tgz -C 指定目录
+        2.修改配置文件
+            1)flink-conf.yaml
+                #jobManager 的IP地址
+                jobmanager.rpc.address: localhost
+                #jobManager 的端口，默认为6123
+                jobmanager.rpc.port: 6123
+                #jobManager 的JVM heap大小
+                jobmanager.heap.size: 1024m
+                #taskManager的jvm heap大小设置
+                taskmanager.memory.process.size: 1728m
+                #taskManager中taskSlots个数，最好设置成work节点的CPU个数相等
+                taskmanager.numberOfTaskSlots: 1
+                #并行计算数
+                parallelism.default: 1
+                - fs.default-scheme –文件系统来源
+                - fs.hdfs.hadoopconf: –hdfs置文件路径
+                - jobmanager.web.port – jobmanager的页面监控端口
+            2)masters
+                主节点 jobmanager接入点
+            3)slaves
+                从节点 taskmanager
+        3.分发到其他主机
+        4.配置环境变量
+            sudo vi /etc/profile
+            export FLINK_HOME=/opt/module/flink-1.6.1
+            export PATH=$PATH:$FLINK_HOME/bin
+            source /etc/profile
+        5.启动 ./bin/start-cluster.sh
+        5.关闭 ./bin/stop-cluster.sh
+
+
+    on yarn
