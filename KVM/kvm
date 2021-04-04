@@ -1,0 +1,6 @@
+1.安装KVM
+    sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtinst virt-manager
+2.添加权限
+    sudo chmod 777 /var/run/libvirt/libvirt-sock
+3.启动KVM
+    sudo virt-manager

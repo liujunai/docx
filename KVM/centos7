@@ -1,0 +1,14 @@
+1.添加普通用户使用sudo权限
+    1.切换到root用户 su root
+    2.visudo 编辑
+    3.找到一行信息 root   ALL(ALL)  ALL  在其下面添加一行信息即可 username(要使用root权限的用户名)   ALL(ALL)  ALL
+      %wheel ALL=(ALL)      ALL
+
+2.修改用户hostname
+    1. vi /etc/hostname 添加主机名
+    2. vi /etc/sysconfig/network 添加IP和hostname对应关系
+    3. 重启reboot生效
+
+3.安装 epel-release
+    1.yum install -y net-tools
+    2.yum install -y vim
