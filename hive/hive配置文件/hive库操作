@@ -1,0 +1,40 @@
+1 创建数据库
+    CREATE DATABASE [IF NOT EXISTS] database_name
+    [COMMENT database_comment]
+    [LOCATION hdfs_path]
+    [WITH DBPROPERTIES (property_name=property_value, ...)];
+
+    1）创建一个数据库，数据库在 HDFS 上的默认存储路径是/user/hive/warehouse/*.db。
+    hive (default)> create database db_hive;
+
+    2）避免要创建的数据库已经存在错误，增加 if not exists 判断。（标准写法）
+    hive (default)> create database if not exists db_hive;
+
+    3）创建一个数据库，指定数据库在 HDFS 上存放的位置
+    hive (default)> create database db_hive2 location '/db_hive2.db';
+
+2 查询数据库
+    1）显示数据库
+    hive> show databases;
+
+    2）过滤显示查询的数据库
+    hive> show databases like 'db_hive*';
+
+    3）显示数据库信息
+    hive> desc database db_hive;
+
+    4）显示数据库详细信息
+    hive> desc database extended db_hive;
+
+    5)切换当前数据库
+    hive (default)> use db_hive;
+
+3 删除数据库
+    1）删除空数据库
+    hive>drop database db_hive2;
+
+    2）如果删除的数据库不存在，最好采用 if exists 判断数据库是否存在
+    hive> drop database if exists db_hive;
+
+    3）如果数据库不为空，可以采用 cascade 命令，强制删除
+    hive> drop database db_hive cascade;

@@ -1,0 +1,69 @@
+centos7 安装 MySQL
+
+1.检查当前系统是否安装过 MySQL
+     rpm -qa|grep mariadb
+     //如果存在通过如下命令卸载
+     sudo rpm -e --nodeps mariadb-libs
+
+2.解压 MySQL 安装包
+     tar -xf  mysql-5.7.32-1.el7.x86_64.rpm-bundle.tar
+
+3.在安装目录下执行 rpm 安装
+    sudo rpm -ivh mysql-community-common-5.7.32-1.el7.x86_64.rpm
+    sudo rpm -ivh mysql-community-libs-5.7.32-1.el7.x86_64.rpm
+    sudo rpm -ivh mysql-community-libs-compat-5.7.32-1.el7.x86_64.rpm
+    sudo rpm -ivh mysql-community-client-5.7.32-1.el7.x86_64.rpm
+    sudo rpm -ivh mysql-community-server-5.7.32-1.el7.x86_64.rpm
+    注意:按照顺序依次执行
+        如果 Linux 是最小化安装的，在安装 mysql-community-server-5.7.32-1.el7.x86_64.rpm 时
+        可能会出现错误，通过 yum 安装缺少的依赖,
+        yum install -y libaio
+        然后重新安装 mysql-community-server-5.7.32-1.el7.x86_64 即可
+
+4.查看/etc/my.cnf 文件中 datadir 指向的目录下的所有内容
+    查看 datadir 的值：  datadir=/var/lib/mysql
+    如果 /var/lib/mysql 有内容的情况下: 删除/var/lib/mysql 目录下的所有内容:
+    cd /var/lib/mysql
+    sudo rm -rf ./* //注意执行命令的位置
+
+5.初始化数据库
+     sudo mysqld --initialize --user=mysql
+
+6.查看临时生成的 root 用户的密码
+    sudo cat /var/log/mysqld.log
+
+7.启动 MySQL 服务
+     sudo systemctl start mysqld
+
+8.登录 MySQL 数据库
+    mysql -uroot -p
+    Enter password: 输入临时生成的密码
+
+9.修改 root 用户的密码
+     set password = password("123456");
+
+10.创建外部链接账户并赋予最高权限
+
+    5.5版本 创建并赋予权限
+    grant all privileges on *.* to '账号'@'%' identified by '密码' with grant option;
+
+    5.7版本 以后创建
+    CREATE USER 'liu'@'%'  IDENTIFIED WITH mysql_native_password BY 'a';
+
+    并赋予最高权限
+    GRANT ALL PRIVILEGES ON *.* TO 'liu'@'%'WITH GRANT OPTION;
+
+11.刷新生效
+     flush privileges;
+
+
+
+
+
+
+
+
+
+
+
+

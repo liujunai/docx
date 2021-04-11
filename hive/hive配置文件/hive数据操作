@@ -1,0 +1,72 @@
+1 数据导入
+    1 向表中装载数据（Load）
+    1）语法
+    hive> load data [local] inpath '数据的 path' [overwrite] into table student [partition (partcol1=val1,…)];
+        （1）load data:表示加载数据
+        （2）local:表示从本地加载数据到 hive 表；否则从 HDFS 加载数据到 hive 表
+        （3）inpath:表示加载数据的路径
+        （4）overwrite:表示覆盖表中已有数据，否则表示追加
+        （5）into table:表示加载到哪张表
+        （6）student:表示具体的表
+        （7）partition:表示上传到指定分区
+
+    2 通过查询语句向表中插入数据（Insert）
+        1)基本模式插入（根据单张表查询结果）
+        hive (default)> insert overwrite table student_par  select id, name from student where month='201709';
+        insert into：以追加数据的方式插入到表或分区，原有数据不会删除
+        insert overwrite：会覆盖表中已存在的数据
+        注意：insert 不支持插入部分字段
+
+    3 查询语句中创建表并加载数据（As Select）根据查询结果创建表（查询的结果会添加到新创建的表中）
+    create table if not exists student3 as select id, name from student;
+
+    4 创建表时通过 Location 指定加载数据路径
+    1）上传数据到 hdfs 上
+    hive (default)> dfs -mkdir /student;
+    hive (default)> dfs -put /opt/module/datas/student.txt /student;
+
+    2）创建表，并指定在 hdfs 上的位置
+    hive (default)> create external table if not exists student5(id int, name string)
+    row format delimited fields terminated by '\t'
+    location '/student;
+
+    5 Import 数据到指定 Hive 表中
+
+2 数据导出
+    1 Insert 导出
+    1）将查询的结果导出到本地
+    hive (default)> insert overwrite local directory '/opt/module/hive/data/export/student' select * from student;
+
+    2）将查询的结果格式化导出到本地
+    hive(default)>insert overwrite local directory '/opt/module/hive/data/export/student1' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' select * from student;
+
+    3）将查询的结果导出到 HDFS 上(没有 local)
+    hive (default)> insert overwrite directory '/user/atguigu/student2' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' select * from student;
+
+    2 Hadoop 命令导出到本地
+    hive (default)> dfs -get /user/hive/warehouse/student/student.txt /opt/module/data/export/student3.txt;
+
+    3 Hive Shell 命令导出
+    基本语法：（hive -f/-e 执行语句或者脚本 > file）
+    [atguigu@hadoop102 hive]$ bin/hive -e 'select * from default.student;' > /opt/module/hive/data/export/student4.txt;
+
+    4 Export 导出到 HDFS 上
+    (defahiveult)> export table default.student to '/user/hive/warehouse/export/student';
+    export 和 import 主要用于两个 Hadoop 平台集群之间 Hive 表迁移。
+
+    5 Sqoop 导出
+
+    6 清除表中数据（Truncate）注意：Truncate 只能删除管理表，不能删除外部表中数据
+    hive (default)> truncate table student;
+
+
+
+
+
+
+
+
+
+
+
+

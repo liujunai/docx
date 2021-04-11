@@ -1,0 +1,67 @@
+1）将 tez 安装包拷贝到集群，并解压 tar 包
+    mkdir /opt/module/tez
+    tar -zxvf /opt/software/tez-0.10.1-SNAPSHOT-minimal.tar.gz -C /opt/module/tez
+
+2）上传 tez 依赖到 HDFS
+    hadoop fs -mkdir /tez
+    hadoop fs -put /opt/software/tez-0.10.1-SNAPSHOT.tar.gz /tez
+3）新建 tez-site.xml
+    vim $HADOOP_HOME/etc/hadoop/tez-site.xml
+    添加如下内容：
+        <?xml version="1.0" encoding="UTF-8"?>
+        <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+        <configuration>
+            <property>
+                <name>tez.lib.uris</name>
+                <value>${fs.defaultFS}/tez/tez-0.10.1-SNAPSHOT.tar.gz</value>
+            </property>
+            <property>
+                <name>tez.use.cluster.hadoop-libs</name>
+                <value>true</value>
+            </property>
+            <property>
+                <name>tez.am.resource.memory.mb</name>
+                <value>1024</value>
+            </property>
+            <property>
+                <name>tez.am.resource.cpu.vcores</name>
+                <value>1</value>
+            </property>
+            <property>
+                <name>tez.container.max.java.heap.fraction</name>
+                <value>0.4</value>
+            </property>
+            <property>
+                <name>tez.task.resource.memory.mb</name>
+                <value>1024</value>
+            </property>
+            <property>
+                <name>tez.task.resource.cpu.vcores</name>
+                <value>1</value>
+            </property>
+        </configuration>
+
+4）修改 Hadoop 环境变量
+    vim $HADOOP_HOME/etc/hadoop/shellprofile.d/tez.sh
+    添加 Tez 的 Jar 包相关信息
+        hadoop_add_profile tez
+        function _tez_hadoop_classpath {
+            hadoop_add_classpath "$HADOOP_HOME/etc/hadoop" after
+            hadoop_add_classpath "/opt/module/tez/*" after
+            hadoop_add_classpath "/opt/module/tez/lib/*" after
+        }
+
+5）修改 Hive 的计算引擎
+    vim $HIVE_HOME/conf/hive-site.xml
+    添加
+        <property>
+            <name>hive.execution.engine</name>
+            <value>tez</value>
+        </property>
+        <property>
+            <name>hive.tez.container.size</name>
+            <value>1024</value>
+        </property>
+
+6）解决日志 Jar 包冲突
+    rm /opt/module/tez/lib/slf4j-log4j12-1.7.10.jar

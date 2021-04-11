@@ -1,117 +1,72 @@
 hive 安装配置
-   1.Linux MySQL安装：
-	rpm -qa|grep -i mysql  查询MySQL
-	用命令 yum -y remove   卸载MySQL
-	安装MySQL5.7
-	cd /usr/local/src/
-	wget http://repo.mysql.com/mysql57-community-release-el7-8.noarch.rpm 
-	rpm -ivh mysql57-community-release-el7-8.noarch.rpm 
-	yum -y install mysql-server
-	启动mysql服务
-	service mysqld restart 
-	查看临时密码
-	grep "password" /var/log/mysqld.log    
-	mysql -u root -p   密码 进入
-	修改密码
-	alter user 'root'@'localhost' identified by 'Root!!2018';   
-	增加root用户指定可以任意IP登录
-	grant all on *.* to 'root001'@'%' identified by 'Root@@'  with grant option;
-	最后记得刷新权限；
-	flush privileges 
-   
-   2.解压hive的安装包
-	tar -zxvf apache-hive-0.14.0-bin.tar.gz -C ../
-	
-	配置环境变量
-	sudo vim /etc/profile
-	export HIVE_HOME=/home/liu/work/hive-3.1.2
-	export PATH=$PATH:HIVE_HOME/bin
-	使变量立即生效
-	source /etc/profile
-	
-   3.备份配置文件
-        cp hive-env.sh.template hive-env.sh
-        cp hive-default.xml.template hive-site.xml
-        cp hive-log4j2.properties.template hive-log4j2.properties  
-   4.配置hive的配置文件
-	1).修改 hive-log4j2.properties
-	property.hive.log.dir = /home/liu/work/hive-3.1.2/temp/logs
-	
-	2).修改 hive-env.sh
-        JAVA_HOME=/usr/local/jdk1.7.0_55
-        HADOOP_HOME=/usr/local/hadoop-2.4.1
-        HIVE_HOME=/usr/local/hive-0.14.0
-   
-   	3).修改 hive-site.xml
-   	    1.源数据服务
-   		<property>
-		    <name>hive.exec.local.scratchdir</name>
-		    <value>/home/liu/work/hive-3.1.2/logs</value>
-		</property>
-		<property>
-		    <name>hive.downloaded.resources.dir</name>
-		    <value>/home/liu/work/hive-3.1.2/logs</value>
-		  </property>
-		<property>
-		    <name>hive.server2.logging.operation.log.location</name>
-		    <value>/home/liu/work/hive-3.1.2/logs</value>
-		</property>
+1.解压 apache-hive-3.1.2-bin.tar.gz 到/opt/module/目录下面
+     tar -zxvf /opt/software/apache-hive-3.1.2-bin.tar.gz -C /opt/module/
 
-		<property>
-		    <name>hive.querylog.location</name>
-		    <value>/home/liu/work/hive-3.1.2/logs</value>
-		</property>
+2.修改 apache-hive-3.1.2-bin.tar.gz 的名称为 hive
+     mv /opt/module/apache-hive-3.1.2-bin/ /opt/module/hive-3.1.2
+
+3.修改/etc/profile.d/my_env.sh，添加环境变量
+    sudo vim /etc/profile.d/my_env.sh
+    #HIVE_HOME
+    export HIVE_HOME=/opt/module/hive-3.1.2
+    export PATH=$PATH:$HIVE_HOME/bin
+
+    使环境生效 source /etc/profile
+
+4.解决日志 Jar 包冲突
+     mv $HIVE_HOME/lib/log4j-slf4j-impl-2.10.0.jar $HIVE_HOME/lib/log4j-slf4j-impl-2.10.0.bak
+
+5.初始化元数据库(hive默认使用的是 derby 数据库)
+     bin/schematool -dbType derby -initSchema
+         ----原因在于 Hive 默认使用的元数据库为 derby，开启 Hive 之后就会占用元数据库，且不与
+             其他客户端共享数据，所以我们需要将 Hive 的元数据地址改为 MySQL。-----
+
+------------------------------------------------------------------------------------------------------------------------
+
+6.安装MySQL数据库
+    详情见：MySQL安装
+
+7.Hive 元数据配置到 MySQL
+    1.拷贝驱动   将 MySQL 的 JDBC 驱动拷贝到 Hive 的 lib 目录下
+
+    2.配置 Metastore 到 MySQL  在$HIVE_HOME/conf 目录下新建 hive-site.xml 文件
+         vim $HIVE_HOME/conf/hive-site.xml
+
+    3.登陆 MySQL 新建 Hive 元数据库
+         create database metastore;
+
+    4.初始化 Hive 元数据库
+        schematool -initSchema -dbType mysql -verbose
+
+8. 启动hive
+    bin/hive
 
 
-		<property>
-		    <name>hive.metastore.warehouse.dir</name>
-		    <value>/user/hive2/warehouse</value>
-		    <description>HDFS路径</description>
-		</property>
+------------------------------------------------------------------------------------------------------------------------
+1.使用元数据服务的方式访问 Hive
+    启动 metastore:  hive --service metastore
+    注意: 启动后窗口不能再操作，需打开一个新的 shell 窗口做别的操作
 
-		<property>
-		    <name>javax.jdo.option.ConnectionURL</name>
-		    <value>jdbc:mysql://liu01:3306/hive2?createDatabaseIfNotExist=true</value>
-		</property>
-
-		<property>
-		    <name>javax.jdo.option.ConnectionDriverName</name>
-		    <value>com.mysql.jdbc.Driver</value>
-		</property>
-		<property>
-		    <name>javax.jdo.option.ConnectionUserName</name>
-		    <value>root</value>
-		</property>
-		 <property>
-		    <name>javax.jdo.option.ConnectionPassword</name>
-		    <value>aA123_456</value>
-		</property>
-		2.客户端服务
-		<property>
-            <name>hive.metastore.warehouse.dir</name>
-            <value>/user/hive2/warehouse</value>
-        </property>
-        <property>
-            <name>hive.metastore.uris</name>
-            <value>thrift://liu04:9083</value>
-        </property>
-        <property>
-            <name>hive.server2.thrift.port</name>
-            <value>10000</value>
-        </property>
-        <property>
-            <name>hive.server2.thrift.bind.host</name>
-            <value>192.168.122.55</value>
-        </property>
+2.使用 JDBC 方式访问 Hive
+    启动 hiveserver2: bin/hive --service hiveserver2
+    启动 beeline 客户端:  bin/beeline -u jdbc:hive2://liu1:10000 -n liu
 
 
-   5.拷贝mysql驱动到$HIVE_HOME/lib目录下(常用的MySQL驱动jar包)
-   	cp /usr/local/soft/mysql-connector-java-5.1.39.jar $HIVE_HOME/lib/
-   
-   7.初始化hive
-     	schematool -dbType mysql -initSchema
-   
-   8.启动 hive
-   	hive，出现以下信息，特别是出现 hive>，说明安装成功了。
-   	hive --service metastore  hive源数据服务
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

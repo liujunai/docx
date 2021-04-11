@@ -1,0 +1,73 @@
+1  监控端口数据官方案例
+
+1.安装 netcat 工具
+    sudo yum install -y nc
+
+2.判断 44444 端口是否被占用
+    sudo netstat -tunlp | grep 44444
+
+3.创建 Flume Agent 配置文件 flume-netcat-logger.conf 在 flume 目录下创建 job 文件夹并进入 job 文件夹。
+    mkdir job
+    cd job/
+    在 job 文件夹下创建 Flume Agent 配置文件 flume-netcat-logger.conf。
+    vim flume-netcat-logger.conf
+
+    添加内容如下：
+    # Name the components on this agent
+    a1.sources = r1
+    a1.sinks = k1
+    a1.channels = c1
+
+    /*
+        a1:表示agent的名称
+        r1:表示a1的Source的名称
+        k1:表示a1的Sink的名称
+        c1:表示a1的Channel的名称
+    */
+
+    # Describe/configure the source
+    a1.sources.r1.type = netcat
+    a1.sources.r1.bind = localhost
+    a1.sources.r1.port = 44444
+
+    /*
+        表示a1的输入源类型为netcat端口类型
+        表示a1的监听的主机
+        表示a1的监听的端口号
+    *
+
+    # Describe the sink
+    a1.sinks.k1.type = logger
+
+    /*
+        表示a1的输出目的地是控制台logger类型
+    */
+
+    # Use a channel which buffers events in memory
+    a1.channels.c1.type = memory
+    a1.channels.c1.capacity = 1000
+    a1.channels.c1.transactionCapacity = 100
+
+    /*
+        表示a1的channel类型是memory内存型
+        表示a1的channel总容量1000个event
+        表示a1的channel传输时收集到了100条event以后再去提交事务
+    */
+
+    # Bind the source and sink to the channel
+    a1.sources.r1.channels = c1
+    a1.sinks.k1.channel = c1
+
+    /*
+        表示将r1和c1连接起来
+        表示将k1和c1连接起来
+    */
+
+4. 开启 flume 监听端口
+    第一种写法：
+    bin/flume-ng agent --conf conf/ --name a1 --conf-file job/flume-netcat-logger.conf -Dflume.root.logger=INFO,console
+    第二种写法：
+    bin/flume-ng agent -c conf/ -n a1 -f job/flume-netcat-logger.conf -Dflume.root.logger=INFO,console
+
+5．使用 netcat 工具向本机的 44444 端口发送内容
+    nc localhost 44444

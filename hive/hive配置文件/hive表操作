@@ -1,0 +1,68 @@
+1 创建表
+    1）建表语法
+    CREATE [EXTERNAL] TABLE [IF NOT EXISTS] table_name
+    [(col_name data_type [COMMENT col_comment], ...)]
+    [COMMENT table_comment]
+    [PARTITIONED BY (col_name data_type [COMMENT col_comment], ...)]
+    [CLUSTERED BY (col_name, col_name, ...)
+    [SORTED BY (col_name [ASC|DESC], ...)] INTO num_buckets BUCKETS]
+    [ROW FORMAT row_format]
+    [STORED AS file_format]
+    [LOCATION hdfs_path]
+    [TBLPROPERTIES (property_name=property_value, ...)]
+    [AS select_statement]
+
+
+    create table test(
+        name string,
+        friends array<string>,
+        children map<string, int>,
+        address struct<street:string, city:string>
+    )
+    row format delimited fields terminated by ','
+    collection items terminated by '_'
+    map keys terminated by ':'
+    lines terminated by '\n';
+
+    row format delimited fields terminated by ',' -- 列分隔符
+    collection items terminated by '_' --MAP STRUCT 和 ARRAY 的分隔符(数据分割符号)
+    map keys terminated by ':' -- MAP 中的 key 与 value 的分隔符
+    lines terminated by '\n'; -- 行分隔符
+
+2 管理表与外部表的互相转换
+    1）查询表的类型
+    hive (default)> desc formatted student2;
+    Table Type: MANAGED_TABLE
+
+    2）修改内部表 student2 为外部表
+    alter table student2 set tblproperties('EXTERNAL'='TRUE');
+
+    3）查询表的类型
+    hive (default)> desc formatted student2;
+    Table Type: EXTERNAL_TABLE
+
+    4）修改外部表 student2 为内部表
+    alter table student2 set tblproperties('EXTERNAL'='FALSE');
+
+    5）查询表的类型
+    hive (default)> desc formatted student2;
+    Table Type: MANAGED_TABLE
+
+3.修改表
+    1）查询表结构
+    hive> desc dept;
+
+    2）添加列
+    hive (default)> alter table dept add columns(deptdesc string);
+
+    3）查询表结构
+    hive> desc dept;
+
+    4）更新列
+    hive (default)> alter table dept change column deptdesc desc string;
+
+    5）查询表结构
+    hive> desc dept;
+
+    6）替换列
+    hive (default)> alter table dept replace columns(deptno string, dname string, loc string);

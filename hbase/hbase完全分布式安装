@@ -1,4 +1,41 @@
 hbase完全分布式安装：
+
+1.HBase 的解压  解压 Hbase 到指定目录：
+    tar -zxvf hbase-1.3.1-bin.tar.gz -C /opt/module
+
+2.HBase 的配置文件  修改 HBase 对应的配置文件。
+    1）hbase-env.sh 修改内容：
+        export JAVA_HOME=/opt/module/jdk1.8.0_192
+        export HBASE_MANAGES_ZK=false
+
+    2）hbase-site.xml 修改内容：
+
+    3）regionservers： （集群节点配置）
+        liu1
+        liu2
+        liu3
+
+    4）软连接 hadoop 配置文件到 HBase： (Hadoop环境变量 配置过可跳过)
+        ln -s /opt/module/hadoop-2.7.2/etc/hadoop/core-site.xml /opt/module/hbase/conf/core-site.xml
+        ln -s /opt/module/hadoop-2.7.2/etc/hadoop/hdfs-site.xml /opt/module/hbase/conf/hdfs-site.xml
+
+3.HBase 服务的启动
+    1.启动方式 (分别启动 master 和 regionserver)
+        bin/hbase-daemon.sh start master
+        bin/hbase-daemon.sh start regionserver
+
+    2.启动方式 2
+        启动服务：
+        bin/start-hbase.sh
+        对应的停止服务：
+        bin/stop-hbase.sh
+
+
+
+
+
+
+
     1.下载hbase
         wget https://mirrors.tuna.tsinghua.edu.cn/apache/hbase/2.2.0/hbase-2.2.0-bin.tar.gz
     2.安装

@@ -16,9 +16,14 @@
 		<name>hadoop.http.staticuser.user</name>
 		<value>liu</value>
 	</property>
-    <!-- 配置 HDFS 网页登录使用的组为 * -->
+
+	<property>
+		<name>hadoop.proxyuser.liu.hosts</name>
+		<value>*</value>
+	</property>
 	<property>
 		<name>hadoop.proxyuser.liu.groups</name>
 		<value>*</value>
 	</property>
+
 </configuration>

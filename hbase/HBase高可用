@@ -1,0 +1,15 @@
+在 HBase 中 HMaster 负责监控 HRegionServer 的生命周期，均衡 RegionServer 的负载，如果 HMaster 挂掉了，那么整个 HBase 集群将陷入不健
+康的状态，并且此时的工作状态并不会维持太久。所以 HBase 支持对 HMaster 的高可用配置。
+
+1．关闭 HBase 集群（如果没有开启则跳过此步）
+[atguigu@hadoop102 hbase]$ bin/stop-hbase.sh
+
+2．在 conf 目录下创建 backup-masters 文件
+[atguigu@hadoop102 hbase]$ touch conf/backup-masters
+
+3．在 backup-masters 文件中配置高可用 HMaster 节点
+[atguigu@hadoop102 hbase]$ echo hadoop103 > conf/backup-masters
+
+4．将整个 conf 目录 scp 到其他节点
+[atguigu@hadoop102 hbase]$ scp -r conf/ hadoop103:/opt/module/hbase/
+[atguigu@hadoop102 hbase]$ scp -r conf/ hadoop104:/opt/module/hbase/
