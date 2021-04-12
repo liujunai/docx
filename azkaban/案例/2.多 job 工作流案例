@@ -1,0 +1,30 @@
+1）创建有依赖关系的多个 job 描述
+    第一个 job：start.job
+    vim start.job
+        #start.job
+        type=command
+        command=touch /opt/module/kangkang.txt
+
+    第二个 job：step1.job 依赖 start.job
+    vim step1.job
+        #step1.job
+        type=command
+        dependencies=start
+        command=echo "this is step1 job"
+
+    第三个 job：step2.job 依赖 start.job
+    vim step2.job
+        #step2.job
+        type=command
+        dependencies=start
+        command=echo "this is step2 job"
+
+    第四个 job：finish.job 依赖 step1.job 和 step2.job
+    vim finish.job
+        #finish.job
+        type=command
+        dependencies=step1,step2
+        command=echo "this is finish job"
+
+2）将所有 job 资源文件打到一个 zip 包中
+    zip jobs.zip start.job step1.job step2.job finish.job

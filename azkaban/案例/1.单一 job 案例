@@ -1,0 +1,15 @@
+1. 单一 job 案例
+
+1.案例实操
+    1）创建 job 描述文件
+        vim first.job
+            #first.job
+            type=command
+            command=echo 'this is my first job'
+    2) 将 job 资源文件打包成 zip 文件
+        zip first.zip first.job
+
+
+
+
+目前，Azkaban 上传的工作流文件只支持 xxx.zip 文件。zip 应包含 xxx.job 运行作业所需的文件和任何文件（文件名后缀必须以.job 结尾，否则无法识别）

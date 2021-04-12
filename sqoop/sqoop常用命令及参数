@@ -1,0 +1,14 @@
+序号          	命令              	类	                说明
+1	          import	    ImportTool	        将数据导入到集群
+2	          export	    ExportTool	          将集群数据导出
+3	         codegen    	CodeGenTool	        获取数据库中某张表数据生成Java并打包Jar
+4	    create-hive-table  	CreateHiveTableTool 	创建Hive表
+5	eval	EvalSqlTool	查看SQL执行结果
+6	import-all-tables	ImportAllTablesTool	导入某个数据库下所有表到HDFS中
+7	job	JobTool	用来生成一个sqoop的任务，生成后，该任务并不执行，除非使用命令执行该任务。
+8	list-databases	ListDatabasesTool	列出所有数据库名
+9	list-tables	ListTablesTool	列出某个数据库下所有表
+10	merge	MergeTool	将HDFS中不同目录下面的数据合在一起，并存放在指定的目录中
+11	metastore 	MetastoreTool	记录sqoop job的元数据信息，如果不启动metastore实例，则默认的元数据存储目录为：~/.sqoop，如果要更改存储目录，可以在配置文件sqoop-site.xml中进行更改。
+12	help	HelpTool	打印sqoop帮助信息
+13	version	VersionTool	打印sqoop版本信息

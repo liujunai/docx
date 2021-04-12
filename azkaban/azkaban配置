@@ -1,0 +1,62 @@
+安装 Azkaban
+
+1) 在/opt/module/目录下创建 azkaban 目录
+    mkdir azkaban
+
+2) 解压 azkaban-web-server-2.5.0.tar.gz、azkaban-executor-server-2.5.0.tar.gz、azkaban-sql-script-2.5.0.tar.gz 到/opt/module/azkaban 目录下
+    tar -zxvf azkaban-web-server-2.5.0.tar.gz -C /opt/module/azkaban/
+    tar -zxvf azkaban-executor-server-2.5.0.tar.gz -C /opt/module/azkaban/
+    tar -zxvf azkaban-sql-script-2.5.0.tar.gz -C /opt/module/azkaban/
+
+3) 对解压后的文件重新命名
+    mv azkaban-web-2.5.0/ server
+    mv azkaban-executor-2.5.0/ executor
+
+4) azkaban 脚本导入
+    进入 mysql，创建 azkaban 数据库，并将解压的脚本导入到 azkaban 数据库。
+        mysql -uroot -p000000
+    mysql> create database azkaban;
+    mysql> use azkaban;
+    mysql> source /opt/module/azkaban-2.5.0/azkaban-2.5.0/create-all-sql-2.5.0.sql
+
+2 生成密钥对和证书
+    Keytool 是 java 数据证书的管理工具，使用户能够管理自己的公/私钥对及相关证书。
+        -keystore 指定密钥库的名称及位置(产生的各类信息将存在.keystore 文件中)
+        -genkey(或者-genkeypair) 生成密钥对
+        -alias 为生成的密钥对指定别名，如果没有默认是 mykey
+        -keyalg 指定密钥的算法 RSA/DSA 默认是 DSA
+
+1）生成 keystore 的密码及相应信息的密钥库
+    keytool -keystore keystore -alias jetty -genkey -keyalg RSA
+        输入密钥库口令:
+        再次输入新口令:
+        您的名字与姓氏是什么?
+            [Unknown]:
+        您的组织单位名称是什么?
+            [Unknown]:
+        您的组织名称是什么?
+            [Unknown]:
+        您所在的城市或区域名称是什么?
+            [Unknown]:
+        您所在的省/市/自治区名称是什么?
+            [Unknown]:
+        该单位的双字母国家/地区代码是什么?
+            [Unknown]:
+        CN=Unknown, OU=Unknown, O=Unknown, L=Unknown, ST=Unknown, C=Unknown 是否
+        正确?
+        [否]: y
+        输入 <jetty> 的密钥口令
+        (如果和密钥库口令相同, 按回车):
+        再次输入新口令:
+        注意：
+        密钥库的密码至少必须 6 个字符，可以是纯数字或者字母或者数字和字母的组合等等
+        密钥库的密码最好和<jetty> 的密钥相同，方便记忆
+2）将 keystore 拷贝到 azkaban web 服务器根目录中
+    mv keystore /opt/module/azkaban/server/
+
+3. 时间同步配置
+1） 如果在/usr/share/zoneinfo/这个目录下不存在时区配置文件 Asia/Shanghai，就要用tzselect 生成。
+2）拷贝该时区文件，覆盖系统本地时区配置
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+3）集群时间同步（同时发给三个窗口）
+    sudo date -s '2018-10-18 16:39:30'

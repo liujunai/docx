@@ -1,0 +1,35 @@
+属性：oozie.service.JPAService.jdbc.driver
+属性值：com.mysql.jdbc.Driver
+解释：JDBC 的驱动
+
+属性：oozie.service.JPAService.jdbc.url
+属性值：jdbc:mysql://hadoop102:3306/oozie
+解释：oozie 所需的数据库地址
+
+属性：oozie.service.JPAService.jdbc.username
+属性值：root
+解释：数据库用户名
+
+属性：oozie.service.JPAService.jdbc.password
+属性值：000000
+解释：数据库密码
+
+属性：oozie.service.HadoopAccessorService.hadoop.configurations
+属性值：*=/opt/module/cdh/hadoop-2.5.0-cdh5.3.6/etc/hadoop
+解释：让 Oozie 引用 Hadoop 的配置文件
+
+属性：oozie.processing.timezone
+属性值：GMT+0800
+解释：修改时区为东八区区时
+
+$ vi /opt/module/cdh/oozie-4.0.0-cdh5.3.6/oozie-server/webapps/oozie/oozie-console.js
+修改如下：
+function getTimeZone() {
+ Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+ return Ext.state.Manager.get("TimezoneId","GMT+0800");
+}
+
+上传配置
+/opt/module/cdh/hadoop-2.5.0-cdh5.3.6/bin/hdfs dfs -put oozie-apps/cron/ /user/admin/oozie-apps
+启动任务
+bin/oozie job -oozie http://hadoop102:11000/oozie -config oozie-apps/cron/job.properties -run

@@ -1,0 +1,42 @@
+部署 Oozie
+
+1 解压 Oozie
+    tar -zxvf /opt/software/cdh/oozie-4.0.0-cdh5.3.6.tar.gz -C ./
+
+2 在 oozie 根目录下解压 oozie-hadooplibs-4.0.0-cdh5.3.6.tar.gz
+    tar -zxvf oozie-hadooplibs-4.0.0-cdh5.3.6.tar.gz -C ../
+    完成后 Oozie 目录下会出现 hadooplibs 目录。
+
+3 在 Oozie 目录下创建 libext 目录
+    mkdir libext/
+
+4 拷贝依赖的 Jar 包
+    1）将 hadooplibs 里面的 jar 包，拷贝到 libext 目录下：
+        cp -ra hadooplibs/hadooplib-2.5.0-cdh5.3.6.oozie-4.0.0-cdh5.3.6/* libext/
+    2）拷贝 Mysql 驱动包到 libext 目录下：
+        cp -a /opt/software/mysql-connector-java-5.1.27/mysql-connector-java-5.1.27-bin.jar ./libext/
+
+5 将 ext-2.2.zip 拷贝到 libext/目录下 ext 是一个 js 框架，用于展示 oozie 前端页面：
+    cp -a /opt/software/cdh/ext-2.2.zip libext/
+
+6 修改 Oozie 配置文件
+
+7 在 Mysql 中创建 Oozie 的数据库
+    进入 Mysql 并创建 oozie 数据库：
+    $ mysql -uroot -p000000
+    mysql> create database oozie;
+
+8 初始化 Oozie
+    1) 上传 Oozie 目录下的 yarn.tar.gz 文件到 HDFS：提示：yarn.tar.gz 文件会自行解压
+        bin/oozie-setup.sh sharelib create -fs hdfs://hadoop102:8020 -locallib oozie-sharelib-4.0.0-cdh5.3.6-yarn.tar.gz
+    执行成功之后，去 50070 检查对应目录有没有文件生成。
+2) 创建 oozie.sql 文件
+    bin/ooziedb.sh create -sqlfile oozie.sql -run
+3) 打包项目，生成 war 包
+    bin/oozie-setup.sh prepare-war
+
+9 Oozie 的启动与关闭
+    启动命令如下：
+    bin/oozied.sh start
+    关闭命令如下：
+    bin/oozied.sh stop

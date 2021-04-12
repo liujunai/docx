@@ -1,0 +1,32 @@
+1 HIVE/HDFS到RDBMS
+    $ bin/sqoop export \
+    --connect jdbc:mysql://hadoop102:3306/company \
+    --username root \
+    --password 000000 \
+    --table staff \
+    --num-mappers 1 \
+    --export-dir /user/hive/warehouse/staff_hive \
+    --input-fields-terminated-by "\t"
+    提示：Mysql中如果表不存在，不会自动创建
+
+
+2 脚本打包
+    使用opt格式的文件打包sqoop命令，然后执行
+        1) 创建一个.opt文件
+        $ mkdir opt
+        $ touch opt/job_HDFS2RDBMS.opt
+
+        2) 编写sqoop脚本
+        $ vi opt/job_HDFS2RDBMS.opt
+
+        export
+        --connect jdbc:mysql://hadoop102:3306/company
+        --username root
+        --password 000000
+        --table staff
+        --num-mappers 1
+        --export-dir /user/hive/warehouse/staff_hive
+        --input-fields-terminated-by "\t"
+
+        3) 执行该脚本
+        $ bin/sqoop --options-file opt/job_HDFS2RDBMS.opt

@@ -1,0 +1,9 @@
+1）创建 job 描述文件
+    vim fs.job
+        #hdfs job
+        type=command
+        command=/opt/module/hadoop-2.7.2/bin/hadoop fs -mkdir /azkaban
+2）将 job 资源文件打包成 zip 文件
+    zip fs.zip fs.job
+
+3）通过 azkaban 的 web 管理平台创建 project 并上传 job 压缩包

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+
+	<!-- 完全分布式集群名称 -->
+	<property>
+		<name>dfs.nameservices</name>
+		<value>mycluster</value>
+	</property>
+	<!-- 集群中 NameNode 节点都有哪些 -->
+	<property>
+		<name>dfs.ha.namenodes.mycluster</name>
+		<value>nn1,nn2</value>
+	</property>
+	<!-- nn1 的 RPC 通信地址 -->
+	<property>
+		<name>dfs.namenode.rpc-address.mycluster.nn1</name>
+		<value>hadoop102:9000</value>
+	</property>
+	<!-- nn2 的 RPC 通信地址 -->
+	<property>
+		<name>dfs.namenode.rpc-address.mycluster.nn2</name>
+		<value>hadoop103:9000</value>
+	</property>
+	<!-- nn1 的 http 通信地址 -->
+	<property>
+		<name>dfs.namenode.http-address.mycluster.nn1</name>
+		<value>hadoop102:50070</value>
+	</property>
+	<!-- nn2 的 http 通信地址 -->
+	<property>
+		<name>dfs.namenode.http-address.mycluster.nn2</name>
+		<value>hadoop103:50070</value>
+	</property>
+	<!-- 指定 NameNode 元数据在 JournalNode 上的存放位置 -->
+	<property>
+		<name>dfs.namenode.shared.edits.dir</name>
+		<value>qjournal://hadoop102:8485;hadoop103:8485;hadoop104:8485/mycluster</value>
+	</property>
+	<!-- 配置隔离机制，即同一时刻只能有一台服务器对外响应 -->
+	<property>
+		<name>dfs.ha.fencing.methods</name>
+		<value>sshfence</value>
+	</property>
+	<!-- 使用隔离机制时需要 ssh 无秘钥登录-->
+	<property>
+		<name>dfs.ha.fencing.ssh.private-key-files</name>
+		<value>/home/atguigu/.ssh/id_rsa</value>
+	</property>
+	<!-- 声明 journalnode 服务器存储目录-->
+	<property>
+		<name>dfs.journalnode.edits.dir</name>
+		<value>/opt/ha/hadoop-2.7.2/data/jn</value>
+	</property>
+	<!-- 关闭权限检查-->
+	<property>
+		<name>dfs.permissions.enable</name>
+		<value>false</value>
+	</property>
+	<!-- 访问代理类：client，mycluster，active 配置失败自动切换实现方式-->
+	<property>
+		<name>dfs.client.failover.proxy.provider.mycluster</name>
+		<value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+	</property>
+	<!-- 自动故障转移-->
+	<property>
+		<name>dfs.ha.automatic-failover.enabled</name>
+		<value>true</value>
+	</property>
+
+
+</configuration>

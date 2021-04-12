@@ -1,0 +1,31 @@
+1. web 服务器配置
+
+1）进入 azkaban web 服务器安装目录 conf 目录，打开 azkaban.properties 文件
+    pwd /opt/module/azkaban/server/conf
+    vim azkaban.properties
+
+2）按照如下配置修改 azkaban.properties 文件。
+    vim azkaban.properties
+
+3）web 服务器用户配置
+    在 azkaban web 服务器安装目录 conf 目录，按照如下配置修改 azkaban-users.xml 文件，
+    增加管理员用户。
+    vim azkaban-users.xml
+
+2. executor 执行服务器配置
+1）进入执行服务器安装目录 conf，打开 azkaban.properties
+    pwd /opt/module/azkaban/executor/conf
+    vim azkaban.properties
+2） 按照如下配置修改 azkaban.properties 文件。
+
+3. 启动 Executor 服务器
+在 executor 服务器目录下执行启动命令
+    pwd /opt/module/azkaban/executor
+    bin/azkaban-executor-start.sh
+
+4. 启动 Web 服务器
+在 azkaban web 服务器目录下执行启动命令
+    pwd /opt/module/azkaban/server
+    bin/azkaban-web-start.sh
+
+注意：先执行 executor，再执行 web，避免 Web Server 会因为找不到执行器启动失败。

@@ -1,0 +1,16 @@
+使用 Azkaban 调度 java 程序
+
+1）编写 java 程序
+
+2）将 java 程序打成 jar 包，创建 lib 目录，将 jar 放入 lib 内
+
+3）编写 job 文件
+    vim azkabanJava.job
+        #azkabanJava.job
+        type=javaprocess
+        java.class=com.atguigu.azkaban.AzkabanTest
+        classpath=/opt/module/azkaban/lib/*
+
+
+4）将 job 文件打成 zip 包
+    zip azkabanJava.zip azkabanJava.job

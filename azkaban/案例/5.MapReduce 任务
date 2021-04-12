@@ -1,0 +1,11 @@
+
+1） 创建 job 描述文件，及 mr 程序 jar 包
+vim mapreduce.job
+    #mapreduce job
+    type=command
+    command=/opt/module/hadoop-2.7.2/bin/hadoop jar /opt/module/hadoop-2.7.2/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.2.jar wordcount /wordcount/input /wordcount/output
+
+2） 将所有 job 资源文件打到一个 zip 包中
+    zip mapreduce.zip mapreduce.job
+
+3）在 azkaban 的 web 管理界面创建工程并上传 zip 包

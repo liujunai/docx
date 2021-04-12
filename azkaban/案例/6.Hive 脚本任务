@@ -1,0 +1,27 @@
+
+1）创建 job 描述文件和 hive 脚本
+    （1）Hive 脚本：student.sql
+        vim student.sql
+            use default;
+            drop table student;
+
+            create table student(id int, name string)
+            row format delimited fields terminated by '\t';
+
+            load data local inpath '/opt/module/datas/student.txt' into table student;
+
+            insert overwrite local directory '/opt/module/datas/student'
+            row format delimited fields terminated by '\t'
+            select * from student;
+
+（2）Job 描述文件：hive.job
+    vim hive.job
+        #hive job
+        type=command
+        command=/opt/module/hive/bin/hive -f /opt/module/azkaban/jobs/student.sql
+
+2） 将所有 job 资源文件打到一个 zip 包中
+    zip hive.zip hive.job
+
+
+3）在 azkaban 的 web 管理界面创建工程并上传 zip 包
