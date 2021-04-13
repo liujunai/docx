@@ -1,0 +1,46 @@
+spark 安装 standalone 模式
+
+1 解压缩文件
+    将 spark-3.0.0-bin-hadoop3.2.tgz 文件上传到 Linux 并解压缩在指定位置
+    tar -zxvf spark-3.0.0-bin-hadoop3.2.tgz -C /opt/module
+    cd /opt/module
+    mv spark-3.0.0-bin-hadoop3.2 spark-standalone
+
+2 修改配置文件
+    1) 进入解压缩后路径的 conf 目录，修改 slaves.template 文件名为 slaves
+    mv slaves.template slaves
+
+    2) 修改 slaves 文件，添加 work 节点
+    linux1
+    linux2
+    linux3
+
+    3) 修改 spark-env.sh.template 文件名为 spark-env.sh
+    mv spark-env.sh.template spark-env.sh
+
+    4) 修改 spark-env.sh 文件，添加 JAVA_HOME 环境变量和集群对应的 master 节点
+        export JAVA_HOME=/opt/module/jdk1.8.0_192
+        SPARK_MASTER_HOST=liu1
+        SPARK_MASTER_PORT=7077
+    注意：7077 端口，相当于 hadoop3 内部通信的 8020 端口，此处的端口需要确认自己的 Hadoop 配置
+
+    5)分发 spark-standalone 目录
+    xsync spark-standalone
+
+3 启动集群
+    1) 执行脚本命令：
+    sbin/start-all.sh
+
+     2) 执行脚本命令：
+    sbin/stop-all.sh
+
+4 提交应用
+    bin/spark-submit \
+    --class org.apache.spark.examples.SparkPi \
+    --master spark://linux1:7077 \
+    ./examples/jars/spark-examples_2.12-3.0.0.jar \
+    10
+        1) --class 表示要执行程序的主类
+        2) --master spark://linux1:7077 独立部署模式，连接到 Spark 集群
+        3) spark-examples_2.12-3.0.0.jar 运行类所在的 jar 包
+        4) 数字 10 表示程序的入口参数，用于设定当前应用的任务数量

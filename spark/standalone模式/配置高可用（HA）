@@ -1,0 +1,28 @@
+
+1) 停止集群
+    sbin/stop-all.sh
+
+2) 启动 Zookeeper
+    myzk start
+
+3) 修改 spark-env.sh 文件添加如下配置
+    注释如下内容：
+    #SPARK_MASTER_HOST=linux1
+    #SPARK_MASTER_PORT=7077
+
+    添加如下内容:
+    #Master 监控页面默认访问端口为 8080，但是可能会和 Zookeeper 冲突，所以改成 8989，也可以自定义，访问 UI 监控页面时请注意
+        SPARK_MASTER_WEBUI_PORT=8989
+        export SPARK_DAEMON_JAVA_OPTS="
+        -Dspark.deploy.recoveryMode=ZOOKEEPER
+        -Dspark.deploy.zookeeper.url=liu1,liu2,liu3
+        -Dspark.deploy.zookeeper.dir=/spark"
+
+4) 分发配置文件
+    xsync conf/
+
+5) 启动集群
+    sbin/start-all.sh
+
+6) 启动 linux2 的单独 Master 节点，此时 linux2 节点 Master 状态处于备用状态
+    sbin/start-master.sh

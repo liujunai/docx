@@ -1,0 +1,35 @@
+spark 安装 yarn 模式
+
+1 解压缩文件
+    将 spark-3.0.0-bin-hadoop3.2.tgz 文件上传到 linux 并解压缩，放置在指定位置。
+    tar -zxvf spark-3.0.0-bin-hadoop3.2.tgz -C /opt/module
+    cd /opt/module
+    mv spark-3.0.0-bin-hadoop3.2 spark-yarn
+
+2 修改配置文件
+    1) 修改 hadoop 配置文件/opt/module/hadoop/etc/hadoop/yarn-site.xml, 并分发
+    <!--是否启动一个线程检查每个任务正使用的物理内存量，如果任务超出分配值，则直接将其杀掉，默认是 true -->
+    <property>
+        <name>yarn.nodemanager.pmem-check-enabled</name>
+        <value>false</value>
+    </property>
+    <!--是否启动一个线程检查每个任务正使用的虚拟内存量，如果任务超出分配值，则直接将其杀掉，默认是 true -->
+    <property>
+        <name>yarn.nodemanager.vmem-check-enabled</name>
+        <value>false</value>
+    </property>
+
+    2) 修改 conf/spark-env.sh，添加 JAVA_HOME 和 YARN_CONF_DIR 配置
+        mv spark-env.sh.template spark-env.sh
+            export JAVA_HOME=/opt/module/jdk1.8.0_192
+            YARN_CONF_DIR=/opt/module/hadoop-3.2.0/etc/hadoop
+
+3 启动 HDFS 以及 YARN 集群
+
+4 提交应用
+    bin/spark-submit \
+    --class org.apache.spark.examples.SparkPi \
+    --master yarn \
+    --deploy-mode cluster \
+    ./examples/jars/spark-examples_2.12-3.0.0.jar \
+    10
