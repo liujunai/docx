@@ -1,0 +1,30 @@
+spark 连接  Hive
+
+如果想连接外部已经部署好的 Hive
+
+
+1.Spark 要接管 Hive 需要把 hive-site.xml 拷贝到 conf/目录下
+将/opt/module/hive-3.1.2/conf/hive-site.xml 配置文件
+拷贝到spark: /opt/module/spark-standalone（spark需要使用的安装的模式）/conf 目录下
+
+2.把 Mysql 的驱动 copy 到 jars/目录下
+将mysql的驱动jar包 拷贝到spark jars目录下
+
+3.如果访问不到 hdfs，则需要把 core-site.xml 和 hdfs-site.xml 拷贝到 conf/目录下
+
+    1）spark-shell
+        直接在spark-shell中可以获取 hive 中的数据
+    2）运行 Spark SQL CLI
+        Spark SQL CLI 可以很方便的在本地运行 Hive 元数据服务以及从命令行执行查询任务。在
+        Spark 目录下执行如下命令启动 Spark SQL CLI，直接执行 SQL 语句，类似一 Hive 窗口
+    3）运行 Spark beeline
+        1.启动 Thrift Server
+            sbin/start-thriftserver.sh
+        2.使用 beeline 连接 Thrift Server
+            bin/beeline -u jdbc:hive2://liu:10000 -n liu
+
+    Spark Thrift Server 是 Spark 社区基于 HiveServer2 实现的一个 Thrift 服务。旨在无缝兼容
+    HiveServer2。因为 Spark Thrift Server 的接口和协议都和 HiveServer2 完全一致，因此我们部
+    署好 Spark Thrift Server 后，可以直接使用 hive 的 beeline 访问 Spark Thrift Server 执行相关
+    语句。Spark Thrift Server 的目的也只是取代 HiveServer2，因此它依旧可以和 Hive Metastore
+    进行交互，获取到 hive 的元数据。

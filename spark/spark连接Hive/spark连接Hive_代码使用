@@ -1,0 +1,29 @@
+spark 连接  Hive
+
+如果想连接外部已经部署好的 Hive
+
+1）导入依赖
+    <dependency>
+        <groupId>org.apache.spark</groupId>
+        <artifactId>spark-hive_2.12</artifactId>
+        <version>3.0.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.hive</groupId>
+        <artifactId>hive-exec</artifactId>
+        <version>1.2.1</version>
+    </dependency>
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>5.1.27</version>
+    </dependency>
+
+2）将 hive-site.xml 文件拷贝到项目的 resources 目录中
+
+    要连接的 Hive 必须要先启动元数据服务
+    config("hive.metastore.uris","thrift://192.168.122.51:9083")
+    注意：在开发工具中创建数据库默认是在本地仓库，通过参数修改数据库仓库的地址:
+    config("spark.sql.warehouse.dir", "hdfs://liu1:8020/user/hive/warehouse")
+    修改主机名称匹配 Hive 的访问用户
+    System.setProperty("HADOOP_USER_NAME", "root")
