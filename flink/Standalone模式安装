@@ -1,0 +1,82 @@
+Standalone模式安装
+
+1. 解压缩 flink-1.10.1-bin-scala_2.12.tgz
+    tar -zxvf flink-1.10.1-bin-scala_2.12.tgz -C /opt/module/
+
+2. 修改目录名称
+    mv flink-1.10.1 flink-1.10.1-Standalone
+
+
+
+3. 修改配置文件
+    1./opt/module/flink-1.10.1-Standalone/conf/masters
+        sudo vi masters
+            liu1:8081
+    2./opt/module/flink-1.10.1-Standalone/conf/slaves
+        sudo vi slaves
+            liu1
+            liu2
+            liu3
+    3./opt/module/flink-1.10.1-Standalone/conf/flink-conf.yaml
+        sudo vi flink-conf.yaml
+            jobmanager.rpc.address: liu1
+            taskmanager.numberOfTaskSlots：2
+
+        可选配置：
+            每个JobManager（jobmanager.heap.mb）的可用内存量，
+            每个TaskManager（taskmanager.heap.mb）的可用内存量，
+            每台机器的可用CPU数量（taskmanager.numberOfTaskSlots），
+            集群中的CPU总数（parallelism.default）和
+            临时目录（taskmanager.tmp.dirs）
+
+4. Flink Standalone 的 HA
+    1.修改配置文件
+    修改 flink-conf.yaml，HA模式下，jobmanager 不需要指定，在master file中配置，由zookeeper选出leader与standby。
+        sudo vi flink-conf.yaml
+
+        #jobmanager.rpc.address: liu1
+
+        #指定高可用模式（必须）
+        high-availability: zookeeper
+
+        #ZooKeeper仲裁是ZooKeeper服务器的复制组，它提供分布式协调服务（必须）
+        high-availability.zookeeper.quorum: liu1:2181,liu2:2181,liu3:2181
+
+        #JobManager元数据保存在文件系统storageDir中，只有指向此状态的指针存储在ZooKeeper中（必须）
+        high-availability.storageDir:hdfs: //liu1:8020/flink/ha/
+
+        #根ZooKeeper节点，在该节点下放置所有集群节点（推荐）
+        high-availability.zookeeper.path.root: /flink
+
+        ＃自定义集群（推荐）
+        high-availability.cluster-id: /flinkCluster
+        state.backend: filesystem
+        state.checkpoints.dir: hdfs://liu1:8020/flink/checkpoints
+        state.savepoints.dir: hdfs://liu1:8020/flink/checkpoints
+
+    修改conf/zoo.cfg
+        server.1=liu1:2888:3888
+        server.2=liu2:2888:3888
+        server.3=liu3:2888:3888
+    修改conf/masters
+        liu1:8081
+        liu2:8081
+    修改slaves
+        liu1
+        liu2
+        liu3
+
+5. 启动HA
+    先启动zookeeper集群各节点（测试环境中也可以用Flink自带的start-zookeeper-quorum.sh），启动dfs ,再启动flink
+    bin/start-cluster.sh
+
+    手动杀死node22上的master，此时，node21上的备用master转为主mater。
+
+    手动将JobManager / TaskManager实例添加到群集
+    您可以使用bin/jobmanager.sh和bin/taskmanager.sh脚本将JobManager和TaskManager实例添加到正在运行的集群中。
+
+    添加JobManager
+    bin/jobmanager.sh ((start|start-foreground) [host] [webui-port])|stop|stop-all
+
+    添加TaskManager
+    bin/taskmanager.sh start|start-foreground|stop|stop-all

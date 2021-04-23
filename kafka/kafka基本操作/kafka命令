@@ -2,9 +2,11 @@ Kafka 命令行操作
 
     1）查看当前服务器中的所有 topic
         bin/kafka-topics.sh --zookeeper liu1:2181 --list
+        bin/kafka-topics.sh --bootstrap-server liu1:9092 --list
 
     2）创建 topic
-        bin/kafka-topics.sh --zookeeper liu1:2181 --create --replication-factor 3 --partitions 1 --topic first
+        bin/kafka-topics.sh --zookeeper liu1:2181 --create --topic first  --partitions 1  --replication-factor 3
+        bin/kafka-topics.sh --bootstrap-server liu1:9092 --create --topic liu --partitions 2 --replication-factor 2
         选项说明：
             --topic 定义 topic 名
             --replication-factor 定义副本数
@@ -14,6 +16,7 @@ Kafka 命令行操作
 
     4）发送消息
         bin/kafka-console-producer.sh --broker-list liu1:9092 --topic first
+        bin/kafka-console-producer.sh --broker-list liu1:9092 --topic liu
 
     5）消费消息
         bin/kafka-console-consumer.sh --zookeeper liu1:2181 --topic first
